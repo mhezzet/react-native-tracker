@@ -20,6 +20,8 @@ const authReducer = (state, action) => {
       return { ...state, loading: action.payload }
     case 'set_token':
       return { ...state, token: action.payload }
+    case 'clear_error_message':
+      return { ...state, errorMessage: '' }
 
     default:
       return state
@@ -27,6 +29,14 @@ const authReducer = (state, action) => {
 }
 
 //actions
+const signinLocal = dispatch => async () => {
+  const token = await AsyncStorage.getItem('token')
+  if (!token) return navigate('Signup')
+
+  dispatch({ type: 'set_token', payload: token })
+  navigate('TrackList')
+}
+
 const signup = dispatch => ({ email, password }) => {
   dispatch({ type: 'set_loading', payload: true })
   trackerApi
@@ -51,12 +61,41 @@ const signup = dispatch => ({ email, password }) => {
     })
 }
 
-const signin = dispatch => ({ email, password }) => {}
+const signin = dispatch => ({ email, password }) => {
+  dispatch({ type: 'set_loading', payload: true })
+  trackerApi
+    .post('/signin', { email, password })
+    .then(({ data }) =>
+      AsyncStorage.setItem('token', data.token).then(() => {
+        dispatch({ type: 'set_token', payload: data.token })
+        dispatch({
+          type: 'set_error',
+          payload: ''
+        })
+        dispatch({ type: 'set_loading', payload: false })
+        navigate('mainFlow')
+      })
+    )
+    .catch(err => {
+      dispatch({ type: 'set_loading', payload: false })
+      dispatch({
+        type: 'set_error',
+        payload: 'Something went wrong with sign in'
+      })
+    })
+}
 
-const signout = dispatch => () => {}
+const signout = dispatch => async () => {
+  await AsyncStorage.removeItem('token')
+  dispatch({ type: 'set_token', payload: null })
+  navigate('loginFlow')
+}
+
+const clearErrorMessage = dispatch => () =>
+  dispatch({ type: 'clear_error_message' })
 
 export const { Context, Provider } = createDataContext(
   authReducer,
-  { signup, signin, signout },
+  { signup, signin, signout, clearErrorMessage, signinLocal },
   initialState
 )

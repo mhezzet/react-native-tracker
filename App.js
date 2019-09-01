@@ -9,9 +9,11 @@ import TrackCreateScreen from './screens/TrackCreateScreen'
 import TrackDetailScreen from './screens/TrackDetailScreen'
 import TrackListScreen from './screens/TrackListScreen'
 import { Provider as AuthProvider } from './context/AuthContext'
+import LoadingScreen from './screens/LoadingScreen'
 import { setNavigator } from './navigator'
 
 const switchNavigator = createSwitchNavigator({
+  loading: LoadingScreen,
   loginFlow: createStackNavigator(
     {
       Signup: SignUpScreen,
@@ -22,12 +24,12 @@ const switchNavigator = createSwitchNavigator({
     }
   ),
   mainFlow: createBottomTabNavigator({
-    CreateTrack: TrackCreateScreen,
-    Account: AccountScreen,
     trackListFlow: createStackNavigator({
       TrackList: TrackListScreen,
       TrackDetail: TrackDetailScreen
-    })
+    }),
+    CreateTrack: TrackCreateScreen,
+    Account: AccountScreen
   })
 })
 
