@@ -8,12 +8,12 @@ import Map from '../components/Map'
 import TrackForm from '../components/TrackForm'
 
 const TrackCreateScreen = ({ isFocused }) => {
-  const { addLocation } = useContext(locationContext)
+  const { addLocation, recording } = useContext(locationContext)
   const { location, startWatching, stopWatching, error } = useLocation()
 
   useEffect(() => {
-    addLocation(location)
-  }, [location])
+    addLocation(location, recording)
+  }, [location, recording])
 
   useEffect(() => {
     if (isFocused) startWatching()
