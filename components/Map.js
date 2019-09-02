@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { StyleSheet, ActivityIndicator } from 'react-native'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Polyline } from 'react-native-maps'
 import { Context as locationContext } from '../context/LocationContext'
 
 const Map = () => {
-  const { currentLocation } = useContext(locationContext)
+  const { currentLocation, locations } = useContext(locationContext)
 
   if (currentLocation === null)
     return <ActivityIndicator size='large' style={{ marginTop: 200 }} />
@@ -18,6 +18,9 @@ const Map = () => {
       }}
       style={styles.map}
     >
+      {locations.length > 0 && (
+        <Polyline coordinates={locations.map(location => location.coords)} />
+      )}
       <Marker coordinate={currentLocation.coords} />
     </MapView>
   )

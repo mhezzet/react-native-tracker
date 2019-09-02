@@ -28,7 +28,7 @@ export default function() {
   }
 
   const stopWatching = () => {
-    subscriber.remove()
+    if (subscriber) subscriber.remove()
     setSubscribere(null)
   }
 

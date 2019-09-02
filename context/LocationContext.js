@@ -21,6 +21,8 @@ const locationReducer = (state, action) => {
       return { ...state, name: action.payload }
     case 'push_location':
       return { ...state, locations: [...state.locations, action.payload] }
+    case 'reset':
+      return { ...initialState, currentLocation: state.currentLocation }
     default:
       return state
   }
@@ -36,8 +38,13 @@ const addLocation = dispatch => (location, recording) => {
 const changeName = dispatch => name =>
   dispatch({ type: 'set_name', payload: name })
 
+const reset = dispatch => () => {
+  dispatch({ type: 'reset' })
+  navigate('TrackList')
+}
+
 export const { Context, Provider } = createDataContext(
   locationReducer,
-  { startRecording, stopRecording, addLocation, changeName },
+  { startRecording, stopRecording, addLocation, changeName, reset },
   initialState
 )
