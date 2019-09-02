@@ -3,8 +3,6 @@ import createDataContext from './createDataContext'
 import trackerApi from '../api/tracker'
 import { navigate } from '../navigator'
 
-console.log(trackerApi)
-
 const initialState = {
   errorMessage: '',
   loading: false,
